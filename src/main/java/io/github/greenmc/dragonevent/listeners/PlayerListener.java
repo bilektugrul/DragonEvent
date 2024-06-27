@@ -3,6 +3,8 @@ package io.github.greenmc.dragonevent.listeners;
 import io.github.greenmc.dragonevent.DragonEvent;
 import io.github.greenmc.dragonevent.event.Event;
 import io.github.greenmc.dragonevent.util.Utils;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,22 +51,32 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e) {
-        if (!event.isActive() || !(e.getDamager().getType().equals(EntityType.PLAYER))) {
-            return;
-        }
+        if (!event.isActive()) return;
 
-        if (e.getEntityType().equals(EntityType.PLAYER)) {
+        Entity victimEntity = e.getEntity();
+        Entity attackerEntity = e.getDamager();
+
+        if (victimEntity.getType().equals(EntityType.PLAYER) && attackerEntity.getType().equals(EntityType.PLAYER)) {
             e.setCancelled(!Utils.getBoolean("end-rules.pvp"));
-        } else if (!e.getEntityType().equals(EntityType.ENDER_DRAGON)) {
             return;
         }
 
-        Player attacker = (Player) e.getDamager();
+        Player attacker = null;
+        if (victimEntity.getType().equals(EntityType.ENDER_DRAGON)) {
+            if (attackerEntity.getType().equals(EntityType.ARROW) || attackerEntity.getType().equals(EntityType.SPECTRAL_ARROW)) {
+                attacker = (Player) ((Arrow) attackerEntity).getShooter();
+            } else if (attackerEntity.getType().equals(EntityType.PLAYER)) {
+                attacker = (Player) attackerEntity;
+            }
+        }
+
+        if (attacker == null) return;
+
         if (event.isPlaying(attacker)) {
-            double damage = e.getFinalDamage();
-            event.getSessionOf(attacker).addGivenDamage(damage);
+            event.getSessionOf(attacker).addGivenDamage(e.getFinalDamage());
         }
     }
+
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
@@ -74,6 +86,7 @@ public class PlayerListener implements Listener {
 
         Player victim = e.getEntity().getPlayer();
         if (event.isPlaying(victim)) {
+            event.leave(victim);
             e.setKeepInventory(Utils.getBoolean("end-rules.keepInventory"));
         }
     }
