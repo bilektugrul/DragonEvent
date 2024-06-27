@@ -1,0 +1,158 @@
+remaining-time-format: '%days% gün %hours% saat %minutes% dakika %seconds% saniye'
+next-event-time-format: dd/MM hh:mma
+dragon-event-time: 15 # minutes
+
+auto-start:
+  enabled: true
+  max-per-month: 100
+  timezone: 'GMT+3'
+
+  days:
+    Sunday:
+      times: 01:15AM, 12:05PM, 08:00PM
+
+    Monday:
+      times: 01:15AM, 12:05PM, 08:00PM
+
+    Tuesday:
+      times: 01:15AM, 12:05PM, 08:00PM
+
+    Wednesday:
+      times: 01:15AM, 12:05PM, 08:00PM
+
+    Thursday:
+      times: 01:15AM, 12:05PM, 08:00PM
+
+    Friday:
+      times: 01:15AM, 12:05PM, 08:00PM
+
+    Saturday:
+      times: 01:15AM, 12:05PM, 08:00PM
+
+end-rules:
+  pvp: true
+  keepInventory: true
+
+# End world name
+end-world-name: 'etkinlik_end'
+
+# Discord feature
+discord:
+  # Bot token
+  token: 'MTEyMzkzOTY2MDQxNTExMTI3OA.GUktmC.lXJrwvVT82EsACB3t0Vnev37nEaOhSF2dQQEfA'
+  # Text channel id
+  channel-id: '1205614155680194610'
+  embeds:
+    timer:
+      message: '<@&1238176637930045480>'
+      title: "Ejderha Eventi Geliyor"
+      description: "Ejderha eventi yaklaşıyor <t:%timestamp%:R>"
+      color: 38f295
+      footer:
+        icon-url: "https://i.imgur.com/Flruc4F.png"
+        text: "MCKutusu"
+    start:
+      message: '<@&1238176637930045480>'
+      title: "Ejderha Eventi Başladı!"
+      description: "Spawndaki portaldan atlıyarak evente katılabilirsin."
+      color: 38f295
+      footer:
+        icon-url: "https://i.imgur.com/Flruc4F.png"
+        text: "MCKutusu"
+    end:
+      message: '<@&1238176637930045480>'
+      title: "Ejderha Eventi Sona Erdi!"
+      description: "Katıldığınız İçin Teşekkürler!"
+      color: 38f295
+      footer:
+        icon-url: "https://i.imgur.com/Flruc4F.png"
+        text: "MCKutusu"
+
+commands:
+  start:
+    - ""
+  end:
+    - ""
+
+messages:
+  start:
+    - '&f #81e0f7Ejderha etkinliği başladı! Başlangıç dünyasındaki End Portalı''nı kullanarak katılabilirsiniz!'
+  end:
+    - "&8&m---------------------------------------"
+    - "&a&lEjderha Öldürüldü! En Çok Hasar Verenler"
+    - " "
+    - "&f &aBirinci &d%dragonevent_top_damage_name_1% &7- &d%dragonevent_top_damage_damage_1%"
+    - "&f &aİkinci &d%dragonevent_top_damage_name_2% &7- &d%dragonevent_top_damage_damage_2%"
+    - "&f &aÜçüncü &d%dragonevent_top_damage_name_3% &7- &d%dragonevent_top_damage_damage_3%"
+    - " "
+    - "&a&lİlk 3 Ödüller"
+    - " "
+    - "&f &21x &aEjderha Yumurtası &8- &21x &aEjderha Kafası &8- &21x &aDragon Sandığı Anahtarı"
+    - "&f &21x &aEjderha Kafası &8- &21x &aBeats Sandığı Anahtarı"
+    - "&f &21x &aAzure Sandığı Anahtarı"
+    - " "
+    - "&8&m---------------------------------------"
+  timed-out: '#81e0f7&lEjderha &8» &aEjderha zamanında öldürülemediği için kimse bir şey kazanmadı.'
+  no-perm: '&cÜzgünüm ama bunu yapmaya yetkin yok.'
+  not-active: '#81e0f7&lEjderha &8» &7Etkinlik henüz başlamadı, etkinlik her gün 19:00''da başlar!'
+  force-start: '&aBir yetkili ejderha etkinliğini başlattı.'
+  force-stop: '&aBir yetkili ejderha etkinliğini bitirdi.'
+  went-wrong: '&cEtkinliğe girmeye çalışırken bir sorun oluştu. Lütfen bunu yetkililere bildir.'
+  already-playing: '&cŞu an zaten oyundasın.'
+  not-playing: '&cŞu an oyunda değilsin.'
+  joined: '&cEjderha etkinliğine katıldın!'
+  left-event: '&cEjderha etkinliğinden ayrıldın.'
+  leaderboard-empty-entry: '&dBoş'
+  no-arguments: '&b/dragonadmin reload|save|start|stop'
+
+dragon:
+  name: "&aEvent Ejderhası"
+  glow: true
+  # Max 200
+  health: 200
+
+sounds:
+  start:
+    enable: true
+    sound: 'ENTITY_LIGHTNING_BOLT_THUNDER'
+  end:
+    enable: true
+    sound: 'ENTITY_LIGHTNING_BOLT_THUNDER'
+
+titles:
+  start:
+    enable: true
+    title: '#81e0f7&lEjderha Etkinliği'
+    subTitle: '&aBaşlıyor...'
+  end:
+    enable: true
+    title: '#81e0f7Ejderha Etkinliği'
+    subTitle: '&cBitti...'
+
+endgame-commands:
+
+  places:
+    1:
+      - 'give %player% dragon_egg 1'
+      - 'give %player% dragon_head 1'
+      - 'cc give p Dragon 1 %player%'
+    2:
+      - 'give %player% dragon_head 1'
+      - 'cc give p Beats 1 %player%'
+    3:
+      - 'cc give p Azure 1 %player%'
+
+  every-other-player:
+    - 'cc give p Event 1 %player%'
+
+locations:
+  spawn:
+    ==: org.bukkit.Location
+    world: world #6248.5 27 6220.5
+    x: 6248.5
+    y: 27.0
+    z: 6220.5
+    yaw: -90.0
+    pitch: -4.0
+
+debug: false
