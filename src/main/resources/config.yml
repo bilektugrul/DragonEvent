@@ -144,15 +144,3 @@ endgame-commands:
 
   every-other-player:
     - 'cc give p Event 1 %player%'
-
-locations:
-  spawn:
-    ==: org.bukkit.Location
-    world: world #6248.5 27 6220.5
-    x: 6248.5
-    y: 27.0
-    z: 6220.5
-    yaw: -90.0
-    pitch: -4.0
-
-debug: false

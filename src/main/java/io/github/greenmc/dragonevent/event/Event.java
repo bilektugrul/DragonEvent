@@ -73,7 +73,10 @@ public class Event {
                     FileUtils.forceDelete(world.getWorldFolder());
                     WorldCreator worldCreator = new WorldCreator(world.getName());
                     worldCreator.copy(world);
-                    plugin.getServer().createWorld(worldCreator);
+                    World created = plugin.getServer().createWorld(worldCreator);
+                    created.setGameRule(GameRule.KEEP_INVENTORY, true);
+                    created.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+                    created.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
                     plugin.getLogger().info("Dragon event world reset.");
                 } else {
                     plugin.getLogger().severe("Something went wrong while unloading event world.");
