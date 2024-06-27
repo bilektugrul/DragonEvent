@@ -33,7 +33,6 @@ public class DragonListener implements Listener {
     @EventHandler
     public void onDeath(EntityDeathEvent event) {
         if (!event.getEntity().getType().equals(EntityType.ENDER_DRAGON)) return;
-        if (!event.getEntity().getName().equals(Utils.getColoredString("dragon.name"))) return;
 
         plugin.getEvent().finish(false);
     }

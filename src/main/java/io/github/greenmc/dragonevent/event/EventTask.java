@@ -28,6 +28,11 @@ public class EventTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (!event.isActive()) {
+            this.cancel();
+            return;
+        }
+
         remainingTimeTicks = remainingTimeTicks - 20;
         minuteCalculate = minuteCalculate + 20;
 
@@ -41,7 +46,7 @@ public class EventTask extends BukkitRunnable {
         }
 
         event.setLeaderboard(newLeaderboard.stream()
-                .sorted(Comparator.comparingDouble(LeaderboardEntry::getValue))
+                .sorted(Comparator.comparingDouble(LeaderboardEntry::getValue).reversed())
                 .collect(Collectors.toList()));
 
         if (remainingTimeTicks == 0) {
