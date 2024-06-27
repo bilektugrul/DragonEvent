@@ -54,7 +54,7 @@ public class PlayerListener implements Listener {
         }
 
         if (e.getEntityType().equals(EntityType.PLAYER)) {
-            e.setCancelled(Utils.getBoolean("end-rules.pvp"));
+            e.setCancelled(!Utils.getBoolean("end-rules.pvp"));
         } else if (!e.getEntityType().equals(EntityType.ENDER_DRAGON)) {
             return;
         }
