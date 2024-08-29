@@ -22,72 +22,81 @@ public class DiscordUtils {
         if (plugin.getBot() == null) return;
 
         TextChannel channel = plugin.getBot().getTextChannelById(config.getString("discord.channel-id", "0"));
-        if (channel != null) {
-            ConfigurationSection embedSec = config.getConfigurationSection("discord.embeds.timer");
-            if (embedSec != null) {
-                MessageEmbed embed = getEmbedFromYml(embedSec, s -> {
-                    s = s.replace("%timestamp%", String.valueOf(time));
-                    s = PlaceholderAPI.setPlaceholders(null, s);
-                    return s;
-                }).build();
-                MessageCreateAction action = channel.sendMessageEmbeds(embed);
-                String message = config.getString("discord.embeds.timer.message", "");
-                if (!message.isEmpty()) {
-                    action.setContent(message);
-                }
-                action.queue();
-            }
+        if (channel == null) return;
+
+        ConfigurationSection embedSec = config.getConfigurationSection("discord.embeds.timer");
+        if (embedSec == null) return;
+
+        MessageEmbed embed = getEmbedFromYml(embedSec, s -> {
+            s = s.replace("%timestamp%", String.valueOf(time));
+            s = PlaceholderAPI.setPlaceholders(null, s);
+            return s;
+        }).build();
+
+        MessageCreateAction action = channel.sendMessageEmbeds(embed);
+        String message = config.getString("discord.embeds.timer.message", "");
+
+        if (!message.isEmpty()) {
+            action.setContent(message);
         }
+
+        action.queue();
     }
 
     public static void sendStartEmbed() {
         if (plugin.getBot() == null) return;
 
         TextChannel channel = plugin.getBot().getTextChannelById(config.getString("discord.channel-id", "0"));
-        if (channel != null) {
-            ConfigurationSection embedSec = config.getConfigurationSection("discord.embeds.start");
-            if (embedSec != null) {
-                MessageEmbed embed = getEmbedFromYml(embedSec, s -> {
-                    s = PlaceholderAPI.setPlaceholders(null, s);
-                    return s;
-                }).build();
-                MessageCreateAction action = channel.sendMessageEmbeds(embed);
-                String message = config.getString("discord.embeds.start.message", "");
-                if (!message.isEmpty()) {
-                    action.setContent(message);
-                }
-                action.queue();
+        if (channel == null) return;
+
+        ConfigurationSection embedSec = config.getConfigurationSection("discord.embeds.start");
+        if (embedSec != null) {
+            MessageEmbed embed = getEmbedFromYml(embedSec, s -> {
+                s = PlaceholderAPI.setPlaceholders(null, s);
+                return s;
+            }).build();
+
+            MessageCreateAction action = channel.sendMessageEmbeds(embed);
+            String message = config.getString("discord.embeds.start.message", "");
+
+            if (!message.isEmpty()) {
+                action.setContent(message);
             }
+
+            action.queue();
         }
     }
 
     public static void sendEndEmbed() {
         if (plugin.getBot() == null) return;
+
         TextChannel channel = plugin.getBot().getTextChannelById(config.getString("discord.channel-id", "0"));
-        if (channel != null) {
-            ConfigurationSection embedSec = config.getConfigurationSection("discord.embeds.end");
-            if (embedSec != null) {
-                MessageEmbed embed = getEmbedFromYml(embedSec, s -> {
-                    s = PlaceholderAPI.setPlaceholders(null, s);
-                    return s;
-                }).build();
-                MessageCreateAction action = channel.sendMessageEmbeds(embed);
-                String message = config.getString("discord.embeds.end.message", "");
-                if (!message.isEmpty()) {
-                    action.setContent(message);
-                }
-                action.queue();
-            }
+        if (channel == null) return;
+
+        ConfigurationSection embedSec = config.getConfigurationSection("discord.embeds.end");
+        if (embedSec == null) return;
+
+        MessageEmbed embed = getEmbedFromYml(embedSec, s -> {
+            s = PlaceholderAPI.setPlaceholders(null, s);
+            return s;
+        }).build();
+
+        MessageCreateAction action = channel.sendMessageEmbeds(embed);
+        String message = config.getString("discord.embeds.end.message", "");
+
+        if (!message.isEmpty()) {
+            action.setContent(message);
         }
+
+        action.queue();
     }
 
     public static EmbedBuilder getEmbedFromYml(ConfigurationSection yml, Function<String, String> placeholders) {
         EmbedBuilder builder = new EmbedBuilder();
+
         String url = yml.getString("url", null);
         String title = yml.getString("title", null);
         String description = yml.getString("description", null);
-        OffsetDateTime timestamp = yml.getString("timestamp", null) != null ? OffsetDateTime.parse(yml.getString("timestamp")) : null;
-        int color = Integer.parseInt(yml.getString("color", "0"), 16);
         String thumbnail = yml.getString("thumbnail", null);
         String author;
         if (yml.isString("author")) {
@@ -95,6 +104,7 @@ public class DiscordUtils {
         } else {
             author = yml.getString("author.name", null);
         }
+
         String authorUrl = yml.getString("author.url", null);
         String authorIconUrl = yml.getString("author.icon-url", null);
         String image = yml.getString("image", null);
@@ -106,6 +116,9 @@ public class DiscordUtils {
         }
         String footerUrl = yml.getString("footer.icon-url", null);
 
+        OffsetDateTime timestamp = yml.getString("timestamp", null) != null ? OffsetDateTime.parse(yml.getString("timestamp")) : null;
+        int color = Integer.parseInt(yml.getString("color", "0"), 16);
+
         if (url != null && !url.isEmpty()) {
             if (title != null) {
                 builder.setTitle(placeholders.apply(title), placeholders.apply(url));
@@ -115,10 +128,24 @@ public class DiscordUtils {
                 builder.setTitle(placeholders.apply(title));
             }
         }
-        if (description != null) builder.setDescription(placeholders.apply(description));
-        if (timestamp != null) builder.setTimestamp(timestamp);
-        if (color != 0) builder.setColor(color);
-        if (thumbnail != null && !thumbnail.isEmpty()) builder.setThumbnail(placeholders.apply(thumbnail));
+
+        if (description != null) {
+            builder.setDescription(placeholders.apply(description));
+        }
+        if (timestamp != null) {
+            builder.setTimestamp(timestamp);
+        }
+        if (color != 0) {
+            builder.setColor(color);
+        }
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            builder.setThumbnail(placeholders.apply(thumbnail));
+        }
+
+        if (image != null && !image.isEmpty()) {
+            builder.setImage(placeholders.apply(image));
+        }
+
         if (author != null) {
             if (authorUrl != null && authorIconUrl != null && !authorIconUrl.isEmpty()) {
                 builder.setAuthor(placeholders.apply(author), placeholders.apply(authorUrl), placeholders.apply(authorIconUrl));
@@ -126,7 +153,7 @@ public class DiscordUtils {
                 builder.setAuthor(placeholders.apply(author), placeholders.apply(authorUrl));
             }
         }
-        if (image != null && !image.isEmpty()) builder.setImage(placeholders.apply(image));
+
         if (footer != null) {
             if (footerUrl != null && !footerUrl.isEmpty()) {
                 builder.setFooter(placeholders.apply(footer), placeholders.apply(footerUrl));
@@ -134,6 +161,7 @@ public class DiscordUtils {
                 builder.setFooter(placeholders.apply(footer));
             }
         }
+
         ConfigurationSection fields = yml.getConfigurationSection("fields");
         if (fields != null) {
             for (String key : fields.getKeys(false)) {
@@ -144,6 +172,7 @@ public class DiscordUtils {
                 builder.addField(placeholders.apply(name), placeholders.apply(value), inline);
             }
         }
+
         return builder;
     }
 
