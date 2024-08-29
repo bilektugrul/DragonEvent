@@ -66,6 +66,8 @@ public class DragonEvent extends JavaPlugin {
         if (autoStartManager != null) {
             ConfigUtils.saveConfig(this, autoStartManager.getAutoStartData(), "autostart_data");
         }
+
+        ConfigUtils.saveConfig(this, event.getLocationsFile(), "locations");
     }
 
     public Event getEvent() {

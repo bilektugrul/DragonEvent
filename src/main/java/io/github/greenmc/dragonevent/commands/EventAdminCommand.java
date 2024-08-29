@@ -4,9 +4,12 @@ import com.google.common.collect.Lists;
 import io.github.greenmc.dragonevent.DragonEvent;
 import io.github.greenmc.dragonevent.event.Event;
 import io.github.greenmc.dragonevent.util.Utils;
+import me.despical.commons.serializer.LocationSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class EventAdminCommand extends Command {
 
@@ -35,13 +38,19 @@ public class EventAdminCommand extends Command {
 
         if (arg.equalsIgnoreCase("reload")) {
             plugin.load();
-            sender.sendMessage("Reloaded!");
+            sender.sendMessage(Utils.getMessage("reloaded", sender));
             return true;
+        }
+
+        if (arg.equalsIgnoreCase("setspawn") && sender instanceof Player player) {
+            Location loc = player.getLocation();
+            event.setSpawn(loc);
+            player.sendMessage(Utils.getMessage("new-spawn", player).replace("%location%", LocationSerializer.toString(loc)));
         }
 
         if (arg.equalsIgnoreCase("save")) {
             plugin.save();
-            sender.sendMessage("Saved!");
+            sender.sendMessage(Utils.getMessage("saved", sender));
             return true;
         }
 

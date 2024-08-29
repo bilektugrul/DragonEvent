@@ -57,7 +57,7 @@ public class PlayerListener implements Listener {
         Entity attackerEntity = e.getDamager();
 
         if (victimEntity.getType().equals(EntityType.PLAYER) && attackerEntity.getType().equals(EntityType.PLAYER)) {
-            e.setCancelled(!Utils.getBoolean("end-rules.pvp"));
+            e.setCancelled(Utils.getBoolean("end-rules.disable-pvp"));
             return;
         }
 

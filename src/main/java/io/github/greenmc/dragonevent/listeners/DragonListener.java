@@ -47,20 +47,25 @@ public class DragonListener implements Listener {
         if (e.getFinalDamage() >= ent.getHealth()) {
             int remainingKills = event.getRemainingKills() - 1;
             event.setRemainingKills(remainingKills);
-            if (remainingKills == 0) {
-                event.finish(false);
-            } else {
+
+            if (remainingKills != 0) {
                 e.setCancelled(true);
                 ent.setHealth(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
                 event.getCurrentSessions().forEach(s -> {
                     Player player = s.getPlayer();
-                    player.sendTitlePart(TitlePart.TITLE, Component.text(Utils.getMessage("respawned-title", player)));
-                    player.sendTitlePart(TitlePart.SUBTITLE,
-                            Component.text(Utils.getMessage("respawned-subtitle", player)
-                                    .replace("%adet%", String.valueOf(remainingKills)))
-                    );
+
+                    if (Utils.getBoolean("titles.respawn.enable")) {
+                        String title = Utils.getColoredString("titles.respawn.title").replace("%times%", String.valueOf(event.getRemainingKills()));
+                        String subTitle = Utils.getColoredString("titles.respawn.subTitle").replace("%times%", String.valueOf(event.getRemainingKills()));
+                        player.sendTitle(title, subTitle, 20, 60, 20);
+                    }
+
                 });
+
+                return;
             }
+
+            event.finish(false);
         }
 
 

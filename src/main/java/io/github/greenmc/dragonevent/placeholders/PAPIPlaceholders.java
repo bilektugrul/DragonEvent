@@ -58,6 +58,14 @@ public class PAPIPlaceholders extends PlaceholderExpansion {
             return "0m";
         }
 
+        if (params.equalsIgnoreCase("health")) {
+            if (event.isActive()) {
+               return String.valueOf(event.getRemainingKills());
+            }
+
+            return "0";
+        }
+
         if (params.equalsIgnoreCase("players")) {
             return String.valueOf(event.getCurrentSessions().size());
         }

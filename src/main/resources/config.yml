@@ -1,4 +1,4 @@
-remaining-time-format: '%days% gün %hours% saat %minutes% dakika %seconds% saniye'
+remaining-time-format: '%days% days %hours% hours %minutes% minutes %seconds% seconds'
 next-event-time-format: dd/MM hh:mma
 dragon-event-time: 15 # minutes
 
@@ -30,43 +30,43 @@ auto-start:
       times: 01:15AM, 12:05PM, 08:00PM
 
 end-rules:
-  pvp: true
+  disable-pvp: true
   keepInventory: true
 
 # End world name
-end-world-name: 'etkinlik_end'
+end-world-name: 'world_the_end'
 
 # Discord feature
 discord:
   # Bot token
-  token: 'MTEyMzkzOTY2MDQxNTExMTI3OA.GUktmC.lXJrwvVT82EsACB3t0Vnev37nEaOhSF2dQQEfA'
+  token: ''
   # Text channel id
-  channel-id: '1205614155680194610'
+  channel-id: ''
   embeds:
     timer:
-      message: '<@&1238176637930045480>'
-      title: "Ejderha Eventi Geliyor"
-      description: "Ejderha eventi yaklaşıyor <t:%timestamp%:R>"
+      message: '<@&roleid>'
+      title: "Dragon Event Starting Soon"
+      description: "Dragon Event Starting Soon <t:%timestamp%:R>"
       color: 38f295
       footer:
-        icon-url: "https://i.imgur.com/Flruc4F.png"
-        text: "MCKutusu"
+        icon-url: "https://img001.prntscr.com/file/img001/YUVatsHGTl-5THs-SOa7ZA.png"
+        text: "MCServer"
     start:
-      message: '<@&1238176637930045480>'
-      title: "Ejderha Eventi Başladı!"
-      description: "Spawndaki portaldan atlıyarak evente katılabilirsin."
+      message: '<@&roleid>'
+      title: "Dragon Event Started"
+      description: "Jump into the portal in spawn to enter the event."
       color: 38f295
       footer:
-        icon-url: "https://i.imgur.com/Flruc4F.png"
-        text: "MCKutusu"
+        icon-url: "https://img001.prntscr.com/file/img001/YUVatsHGTl-5THs-SOa7ZA.png"
+        text: "MCServer"
     end:
-      message: '<@&1238176637930045480>'
-      title: "Ejderha Eventi Sona Erdi!"
-      description: "Katıldığınız İçin Teşekkürler!"
+      message: '<@&roleid>'
+      title: "Dragon Event Ended"
+      description: "Thanks for joining!"
       color: 38f295
       footer:
-        icon-url: "https://i.imgur.com/Flruc4F.png"
-        text: "MCKutusu"
+        icon-url: "https://img001.prntscr.com/file/img001/YUVatsHGTl-5THs-SOa7ZA.png"
+        text: "MCServer"
 
 commands:
   start:
@@ -76,40 +76,42 @@ commands:
 
 messages:
   start:
-    - '&f #81e0f7Ejderha etkinliği başladı! Başlangıç dünyasındaki End Portalı''nı kullanarak katılabilirsiniz!'
+    - '&f #81e0f7Dragon Event has just started! Jump into the portal in spawn to join!'
   end:
     - "&8&m---------------------------------------"
-    - "&a&lEjderha Öldürüldü! En Çok Hasar Verenler"
+    - "&a&lEvent Dragon Killed! Damage Leaderboard:"
     - " "
-    - "&f &aBirinci &d%dragonevent_top_damage_name_1% &7- &d%dragonevent_top_damage_damage_1%"
-    - "&f &aİkinci &d%dragonevent_top_damage_name_2% &7- &d%dragonevent_top_damage_damage_2%"
-    - "&f &aÜçüncü &d%dragonevent_top_damage_name_3% &7- &d%dragonevent_top_damage_damage_3%"
+    - "&f &aFirst &d%dragonevent_top_damage_name_1% &7- &d%dragonevent_top_damage_damage_1%"
+    - "&f &aSecond &d%dragonevent_top_damage_name_2% &7- &d%dragonevent_top_damage_damage_2%"
+    - "&f &aThird &d%dragonevent_top_damage_name_3% &7- &d%dragonevent_top_damage_damage_3%"
     - " "
-    - "&a&lİlk 3 Ödüller"
+    - "&a&lTop 3 Prizes"
     - " "
-    - "&f &21x &aEjderha Yumurtası &8- &21x &aEjderha Kafası &8- &21x &aDragon Sandığı Anahtarı"
-    - "&f &21x &aEjderha Kafası &8- &21x &aBeats Sandığı Anahtarı"
-    - "&f &21x &aAzure Sandığı Anahtarı"
+    - "&f &21x &aDragon Egg &8- &23x &aDragon Head"
+    - "&f &22x &aDragon Head"
+    - "&f &21x &aDragon Head"
     - " "
     - "&8&m---------------------------------------"
-  timed-out: '#81e0f7&lEjderha &8» &aEjderha zamanında öldürülemediği için kimse bir şey kazanmadı.'
-  no-perm: '&cÜzgünüm ama bunu yapmaya yetkin yok.'
-  not-active: '#81e0f7&lEjderha &8» &7Etkinlik henüz başlamadı, etkinlik her gün 19:00''da başlar!'
-  force-start: '&aBir yetkili ejderha etkinliğini başlattı.'
-  force-stop: '&aBir yetkili ejderha etkinliğini bitirdi.'
-  went-wrong: '&cEtkinliğe girmeye çalışırken bir sorun oluştu. Lütfen bunu yetkililere bildir.'
-  already-playing: '&cŞu an zaten oyundasın.'
-  not-playing: '&cŞu an oyunda değilsin.'
-  joined: '&cEjderha etkinliğine katıldın!'
-  left-event: '&cEjderha etkinliğinden ayrıldın.'
-  leaderboard-empty-entry: '&dBoş'
+  timed-out: '&aEvent Dragon was not killed in time so nobody won.'
+  no-perm: '&cI''m sorry but you can not do that.'
+  not-active: '&cEvent has not started yet.'
+  force-start: '&aA staff member started Dragon Event.'
+  force-stop: '&aA staff member ended Dragon Event.'
+  went-wrong: '&cSomething went wrong while trying to join the event. Please let staff members know about this.'
+  already-playing: '&cYou are already in the event.'
+  not-playing: '&cYou are not in the event.'
+  joined: '&aYou joined Dragon Event!'
+  left-event: '&cYou just left Dragon Event.'
+  leaderboard-empty-entry: '&dEmpty'
+
   no-arguments: '&b/dragonadmin reload|save|start|stop'
-  respawned-title: '&bEJDERHA YENİDEN CANLANDI!'
-  respawned-subtitle: '&eOnu &9%adet% &ekez daha öldürmelisiniz!'
+  reloaded: '&bConfig reloaded!'
+  saved: '&bSpawn and auto save data are saved!'
+  new-spawn: '&bNew spawn location: &f%location%'
 
 dragon:
-  name: "&aEvent Ejderhası"
-  required-kills: 4
+  name: "&aEvent Dragon"
+  required-kills: 4 # they would need to kill dragons 4 times in order for event to end
   glow: true
   # Max 200
   health: 200
@@ -125,25 +127,27 @@ sounds:
 titles:
   start:
     enable: true
-    title: '#81e0f7&lEjderha Etkinliği'
-    subTitle: '&aBaşlıyor...'
+    title: '#81e0f7&lDragon Event'
+    subTitle: '&aStarting...'
   end:
     enable: true
-    title: '#81e0f7Ejderha Etkinliği'
-    subTitle: '&cBitti...'
+    title: '#81e0f7Dragon Event'
+    subTitle: '&cEnding...'
+  respawn:
+    enable: true
+    title: '&bDRAGON SUDDENLY REBORN!'
+    subTitle: '&eYou have to kill it &9%times% times &emore!'
 
 endgame-commands:
 
   places:
     1:
       - 'give %player% dragon_egg 1'
-      - 'give %player% dragon_head 1'
-      - 'cc give p Dragon 1 %player%'
+      - 'give %player% dragon_head 3'
     2:
-      - 'give %player% dragon_head 1'
-      - 'cc give p Beats 1 %player%'
+      - 'give %player% dragon_head 2'
     3:
-      - 'cc give p Azure 1 %player%'
+      - 'give %player% dragon_head 1'
 
   every-other-player:
-    - 'cc give p Event 1 %player%'
+    - 'bal add %player% 1000'

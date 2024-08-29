@@ -31,7 +31,7 @@ public class EventPlayerCommand extends Command {
         Event event = plugin.getEvent();
         String arg = args[0];
 
-        if (arg.equalsIgnoreCase("join")) {
+        if (arg.equalsIgnoreCase("join")) { 
         }
 
         if (arg.equalsIgnoreCase("leave")) {

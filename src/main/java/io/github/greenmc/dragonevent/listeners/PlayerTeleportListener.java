@@ -37,7 +37,8 @@ public class PlayerTeleportListener implements Listener {
                     cooldown.add(player.getUniqueId());
                     plugin.getServer().getScheduler().runTaskLater(plugin, () -> cooldown.remove(player.getUniqueId()), 60L);
                 }
-                Location location = plugin.getConfig().getLocation("locations.spawn");
+
+                Location location = plugin.getEvent().getSpawn();
                 if (location != null) {
                     player.teleport(location);
                 }

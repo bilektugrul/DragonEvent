@@ -6,7 +6,9 @@ import io.github.greenmc.dragonevent.rewards.RewardManager;
 import io.github.greenmc.dragonevent.util.DiscordUtils;
 import io.github.greenmc.dragonevent.util.Utils;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.despical.commons.configuration.ConfigUtils;
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -17,6 +19,7 @@ public class Event {
 
     private final DragonEvent plugin;
     private final RewardManager rewardManager;
+    private final FileConfiguration locationsFile;
 
     private final List<EventPlayerSession> currentSessions = new ArrayList<>();
     private List<LeaderboardEntry> leaderboard = new ArrayList<>();
@@ -31,6 +34,7 @@ public class Event {
         this.plugin = plugin;
         this.requiredKills = Utils.getInt("dragon.required-kills");
         this.rewardManager = plugin.getRewardManager();
+        this.locationsFile = ConfigUtils.getConfig(plugin, "locations");
     }
 
     public void start() {
@@ -67,7 +71,7 @@ public class Event {
 
     public void resetWorld() {
         World world = plugin.getServer().getWorld(plugin.getConfig().getString("end-world-name", "world_the_end"));
-        Location spawn = plugin.getConfig().getLocation("locations.spawn");
+        Location spawn = getSpawn();
         if (world != null && spawn != null) {
             world.getPlayers().forEach(player -> player.teleport(spawn));
         }
@@ -106,22 +110,6 @@ public class Event {
 
         this.currentSessions.add(new EventPlayerSession(player));
         player.sendMessage(Utils.getMessage("joined", player));
-
-        /*plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            if (plugin.getConfig().getInt("extra-dragon-amount") != -1) {
-                if (!this.someJoined) {
-                    World world = plugin.getServer().getWorld(plugin.getConfig().getString("end-world-name", "world_the_end"));
-                    for (int i = 0; i <= plugin.getConfig().getInt("extra-dragon-amount", 1); i++) {
-                        world.spawn(world.getEnderDragonBattle().getEndPortalLocation().add(0, 25, 0), EnderDragon.class, e -> {
-                            e.setPhase(EnderDragon.Phase.CIRCLING);
-                            e.setPodium(world.getEnderDragonBattle().getEndPortalLocation());
-                        });
-                    }
-
-                }
-            }
-        }, 40);*/
-
     }
 
     public void leave(Player player) {
@@ -137,8 +125,7 @@ public class Event {
 
         EventPlayerSession session = getSessionOf(player);
 
-        Location spawn = plugin.getConfig().getLocation("locations.spawn");
-        player.teleport(spawn);
+        player.teleport(getSpawn());
         currentSessions.remove(session);
 
         player.sendMessage(Utils.getMessage("left-event", player));
@@ -153,7 +140,6 @@ public class Event {
             this.eventTask = null;
         }
 
-        Location spawn = plugin.getConfig().getLocation("locations.spawn");
         World world = plugin.getServer().getWorld(plugin.getConfig().getString("end-world-name", "world_the_end"));
         if (world != null) {
             try {
@@ -165,7 +151,7 @@ public class Event {
         }
 
         for (EventPlayerSession session : currentSessions) {
-            session.getPlayer().teleport(spawn);
+            session.getPlayer().teleport(getSpawn());
         }
 
         plugin.getServer().getOnlinePlayers().forEach(player -> {
@@ -318,4 +304,16 @@ public class Event {
         return eventTask;
     }
 
+    public FileConfiguration getLocationsFile() {
+        return locationsFile;
+    }
+
+    public Location getSpawn() {
+        Location spawn = locationsFile.getLocation("spawn");
+        return spawn == null ? plugin.getServer().getWorlds().get(0).getSpawnLocation() : spawn;
+    }
+
+    public void setSpawn(Location location) {
+        locationsFile.set("spawn", location);
+    }
 }
