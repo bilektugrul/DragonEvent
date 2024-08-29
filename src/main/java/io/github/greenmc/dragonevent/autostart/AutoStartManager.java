@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import io.github.greenmc.dragonevent.DragonEvent;
 import io.github.greenmc.dragonevent.util.Utils;
 import me.despical.commons.configuration.ConfigUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.DateFormatSymbols;

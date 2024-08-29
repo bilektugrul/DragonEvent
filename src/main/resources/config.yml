@@ -104,9 +104,12 @@ messages:
   left-event: '&cEjderha etkinliğinden ayrıldın.'
   leaderboard-empty-entry: '&dBoş'
   no-arguments: '&b/dragonadmin reload|save|start|stop'
+  respawned-title: '&bEJDERHA YENİDEN CANLANDI!'
+  respawned-subtitle: '&eOnu &9%adet% &ekez daha öldürmelisiniz!'
 
 dragon:
   name: "&aEvent Ejderhası"
+  required-kills: 4
   glow: true
   # Max 200
   health: 200

@@ -46,7 +46,7 @@ public class EventTask extends BukkitRunnable {
         }
 
         event.setLeaderboard(newLeaderboard.stream()
-                .sorted(Comparator.comparingDouble(LeaderboardEntry::getValue).reversed())
+                .sorted(Comparator.comparingDouble(LeaderboardEntry::value).reversed())
                 .collect(Collectors.toList()));
 
         if (remainingTimeTicks == 0) {

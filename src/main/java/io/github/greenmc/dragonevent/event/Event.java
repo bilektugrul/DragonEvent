@@ -10,7 +10,8 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.codehaus.plexus.util.FileUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Event {
 
@@ -21,10 +22,14 @@ public class Event {
     private List<LeaderboardEntry> leaderboard = new ArrayList<>();
 
     private boolean active;
+
+    private final int requiredKills;
+    private int remainingKills;
     private EventTask eventTask;
 
     public Event(DragonEvent plugin) {
         this.plugin = plugin;
+        this.requiredKills = Utils.getInt("dragon.required-kills");
         this.rewardManager = plugin.getRewardManager();
     }
 
@@ -32,6 +37,7 @@ public class Event {
         if (this.active) return;
 
         this.active = true;
+        this.remainingKills = this.requiredKills;
 
         this.eventTask = new EventTask(plugin);
         DiscordUtils.sendStartEmbed();
@@ -57,7 +63,6 @@ public class Event {
         });
 
         Bukkit.broadcastMessage(Utils.getMessage("start", null));
-
     }
 
     public void resetWorld() {
@@ -99,8 +104,24 @@ public class Event {
             return;
         }
 
-        currentSessions.add(new EventPlayerSession(player));
+        this.currentSessions.add(new EventPlayerSession(player));
         player.sendMessage(Utils.getMessage("joined", player));
+
+        /*plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            if (plugin.getConfig().getInt("extra-dragon-amount") != -1) {
+                if (!this.someJoined) {
+                    World world = plugin.getServer().getWorld(plugin.getConfig().getString("end-world-name", "world_the_end"));
+                    for (int i = 0; i <= plugin.getConfig().getInt("extra-dragon-amount", 1); i++) {
+                        world.spawn(world.getEnderDragonBattle().getEndPortalLocation().add(0, 25, 0), EnderDragon.class, e -> {
+                            e.setPhase(EnderDragon.Phase.CIRCLING);
+                            e.setPodium(world.getEnderDragonBattle().getEndPortalLocation());
+                        });
+                    }
+
+                }
+            }
+        }, 40);*/
+
     }
 
     public void leave(Player player) {
@@ -192,7 +213,7 @@ public class Event {
             if (normalReward != null) {
 
                 for (LeaderboardEntry entry : leaderboard) {
-                    Player player = Bukkit.getPlayerExact(entry.getName());
+                    Player player = Bukkit.getPlayerExact(entry.name());
 
                     for (String cmd : normalReward.getCommands()) {
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), PlaceholderAPI.setPlaceholders(player, cmd));
@@ -213,6 +234,18 @@ public class Event {
         currentSessions.clear();
 
         DiscordUtils.sendEndEmbed();
+    }
+
+    public int getRequiredKills() {
+        return requiredKills;
+    }
+
+    public int getRemainingKills() {
+        return remainingKills;
+    }
+
+    public void setRemainingKills(int remainingKills) {
+        this.remainingKills = remainingKills;
     }
 
     public boolean isPlaying(Player player) {
@@ -236,7 +269,7 @@ public class Event {
     public int getPlaceOf(Player player) {
         int i = 1;
         for (LeaderboardEntry entry : leaderboard) {
-            if (entry.getName().equals(player.getName())) return i;
+            if (entry.name().equals(player.getName())) return i;
             ++i;
         }
 
@@ -249,7 +282,7 @@ public class Event {
                 return null;
             }
 
-            return Bukkit.getPlayerExact(leaderboard.get(place - 1).getName());
+            return Bukkit.getPlayerExact(leaderboard.get(place - 1).name());
         }
 
         return null;
@@ -257,7 +290,7 @@ public class Event {
 
     public double getDamageOf(String name) {
         for (LeaderboardEntry entry : leaderboard) {
-            if (entry.getName().equals(name)) return entry.getValue();
+            if (entry.name().equals(name)) return entry.value();
         }
 
         return -1;
