@@ -29,24 +29,26 @@ public class PlayerTeleportListener implements Listener {
         Player player = event.getPlayer();
 
         if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.END_PORTAL) ||
-                (world != null && world.getName().equalsIgnoreCase(plugin.getConfig().getString("end-world-name", "world_the_end")))) {
-            if (!plugin.getEvent().isActive()) {
-                String message = Utils.getMessage("not-active", player);
-                if (!cooldown.contains(player.getUniqueId())) {
-                    player.sendMessage(message);
-                    cooldown.add(player.getUniqueId());
-                    plugin.getServer().getScheduler().runTaskLater(plugin, () -> cooldown.remove(player.getUniqueId()), 60L);
-                }
+                (world != null && world.getName().equalsIgnoreCase(plugin.getConfig().getString("event-world-name")))) {
 
-                Location location = plugin.getEvent().getSpawn();
-                if (location != null) {
-                    player.teleport(location);
-                }
-
-                event.setCancelled(true);
-            } else {
+            if (plugin.getEvent().isActive()) {
                 plugin.getEvent().enter(player);
+                return;
             }
+
+            String message = Utils.getMessage("not-active", player);
+            if (!cooldown.contains(player.getUniqueId())) {
+                player.sendMessage(message);
+                cooldown.add(player.getUniqueId());
+                plugin.getServer().getScheduler().runTaskLater(plugin, () -> cooldown.remove(player.getUniqueId()), 60L);
+            }
+
+            Location location = plugin.getEvent().getSpawn();
+            if (location != null) {
+                player.teleport(location);
+            }
+
+            event.setCancelled(true);
         }
     }
 

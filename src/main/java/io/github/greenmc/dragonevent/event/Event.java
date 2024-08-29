@@ -22,6 +22,7 @@ public class Event {
     private final FileConfiguration locationsFile;
 
     private final List<EventPlayerSession> currentSessions = new ArrayList<>();
+    private final List<Player> joinedBefore = new ArrayList<>();
     private List<LeaderboardEntry> leaderboard = new ArrayList<>();
 
     private boolean active;
@@ -70,22 +71,25 @@ public class Event {
     }
 
     public void resetWorld() {
-        World world = plugin.getServer().getWorld(plugin.getConfig().getString("end-world-name", "world_the_end"));
-        Location spawn = getSpawn();
-        if (world != null && spawn != null) {
-            world.getPlayers().forEach(player -> player.teleport(spawn));
+        String worldName = plugin.getConfig().getString("event-world-name");
+        World world = plugin.getServer().getWorld(worldName);
+        boolean alreadyCreated = false;
+
+        if (world == null) {
+            world = createWorld();
+            alreadyCreated = true;
+        } else {
+            Location spawn = getSpawn();
+            if (spawn != null) {
+                world.getPlayers().forEach(player -> player.teleport(spawn));
+            }
         }
 
-        if (world != null) {
+        if (!alreadyCreated) {
             try {
                 if (plugin.getServer().unloadWorld(world, false)) {
                     FileUtils.forceDelete(world.getWorldFolder());
-                    WorldCreator worldCreator = new WorldCreator(world.getName());
-                    worldCreator.copy(world);
-                    World created = plugin.getServer().createWorld(worldCreator);
-                    created.setGameRule(GameRule.KEEP_INVENTORY, true);
-                    created.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-                    created.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
+                    createWorld();
                     plugin.getLogger().info("Dragon event world reset.");
                 } else {
                     plugin.getLogger().severe("Something went wrong while unloading event world.");
@@ -97,19 +101,47 @@ public class Event {
         }
     }
 
+    private World createWorld() {
+        WorldCreator worldCreator = new WorldCreator(Utils.getString("event-world-name"));
+        worldCreator.environment(World.Environment.THE_END);
+        World world = worldCreator.createWorld();
+        world.setGameRule(GameRule.KEEP_INVENTORY, Utils.getBoolean("end-rules.keepInventory"));
+        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, Utils.getBoolean("end-rules.announceAdvancements"));
+        world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, Utils.getBoolean("end-rules.showDeathMessages"));
+        return world;
+    }
+
     public void enter(Player player) {
-        if (!isActive()) {
+        if (!this.isActive()) {
             player.sendMessage(Utils.getMessage("not-active", player));
             return;
         }
 
-        if (isPlaying(player)) {
+        if (this.isPlaying(player)) {
             player.sendMessage(Utils.getMessage("already-playing", player));
             return;
         }
 
+        long price = Utils.getLong("event-price");
+        if (this.plugin.getEconomy().has(player, price)) {
+
+            if (this.isJoinedBefore(player)) {
+                if (Utils.getBoolean("price-required-for-every-join")) {
+                    this.plugin.getEconomy().withdrawPlayer(player, price);
+                }
+            } else {
+                this.plugin.getEconomy().withdrawPlayer(player, price);
+            }
+        }
+
+        this.joinedBefore.add(player);
         this.currentSessions.add(new EventPlayerSession(player));
         player.sendMessage(Utils.getMessage("joined", player));
+
+    }
+
+    public boolean isJoinedBefore(Player player) {
+        return joinedBefore.contains(player);
     }
 
     public void leave(Player player) {
@@ -140,7 +172,7 @@ public class Event {
             this.eventTask = null;
         }
 
-        World world = plugin.getServer().getWorld(plugin.getConfig().getString("end-world-name", "world_the_end"));
+        World world = plugin.getServer().getWorld(plugin.getConfig().getString("event-world-name"));
         if (world != null) {
             try {
                 world.getEnderDragonBattle().getEnderDragon().remove();

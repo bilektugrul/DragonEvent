@@ -22,6 +22,10 @@ public class Utils {
         return plugin.getConfig().getInt(path);
     }
 
+    public static long getLong(String path) {
+        return plugin.getConfig().getLong(path);
+    }
+
     public static String getString(String string) {
         return plugin.getConfig().getString(string);
     }

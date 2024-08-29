@@ -3,6 +3,7 @@ package io.github.greenmc.dragonevent;
 import io.github.greenmc.dragonevent.autostart.AutoStartManager;
 import io.github.greenmc.dragonevent.commands.EventAdminCommand;
 import io.github.greenmc.dragonevent.commands.EventPlayerCommand;
+import io.github.greenmc.dragonevent.economy.VaultManager;
 import io.github.greenmc.dragonevent.event.Event;
 import io.github.greenmc.dragonevent.listeners.DragonListener;
 import io.github.greenmc.dragonevent.listeners.PlayerListener;
@@ -14,6 +15,7 @@ import io.github.greenmc.dragonevent.util.Utils;
 import me.despical.commons.configuration.ConfigUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.TimeZone;
@@ -23,12 +25,14 @@ public class DragonEvent extends JavaPlugin {
     private Event event;
     private AutoStartManager autoStartManager;
     private RewardManager rewardManager;
+    private VaultManager vaultManager;
     private JDA bot;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
 
+        this.vaultManager = new VaultManager(this);
         this.rewardManager = new RewardManager(this);
         this.event = new Event(this);
         this.event.resetWorld();
@@ -84,6 +88,10 @@ public class DragonEvent extends JavaPlugin {
 
     public JDA getBot() {
         return bot;
+    }
+
+    public Economy getEconomy() {
+        return vaultManager.getEconomy();
     }
 
 }
