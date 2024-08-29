@@ -2,14 +2,21 @@ package io.github.greenmc.dragonevent.util;
 
 import io.github.greenmc.dragonevent.DragonEvent;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.despical.commons.reflection.XReflection;
 import me.despical.commons.util.Strings;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -194,6 +201,25 @@ public class Utils {
     public static long ticksToMinutes(long ticks) {
         int ticksPerMinute = 20 * 60;
         return ticks / ticksPerMinute;
+    }
+
+    public static final boolean SUPPORTS_GLOWING = XReflection.supports(9);
+
+    public static void setGlowing(LivingEntity entity, ChatColor color) {
+        if (!SUPPORTS_GLOWING || color == ChatColor.RESET) return;
+
+        entity.setGlowing(true);
+
+        Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
+        String teamName = "DragonEvent_" + color.name();
+        Team team = board.getTeam(teamName);
+
+        if (team == null) {
+            team = board.registerNewTeam("DragonEvent_" + color.name());
+        }
+
+        team.setColor(color);
+        team.addEntry(entity.getUniqueId().toString());
     }
 
 }

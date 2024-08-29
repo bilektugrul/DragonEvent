@@ -30,6 +30,7 @@ public class Event {
     private final int requiredKills;
     private int remainingKills;
     private EventTask eventTask;
+    private World eventWorld;
 
     public Event(DragonEvent plugin) {
         this.plugin = plugin;
@@ -72,24 +73,23 @@ public class Event {
 
     public void resetWorld() {
         String worldName = plugin.getConfig().getString("event-world-name");
-        World world = plugin.getServer().getWorld(worldName);
         boolean alreadyCreated = false;
 
-        if (world == null) {
-            world = createWorld();
+        if (eventWorld == null) {
+            eventWorld = createWorld();
             alreadyCreated = true;
         } else {
             Location spawn = getSpawn();
             if (spawn != null) {
-                world.getPlayers().forEach(player -> player.teleport(spawn));
+                eventWorld.getPlayers().forEach(player -> player.teleport(spawn));
             }
         }
 
         if (!alreadyCreated) {
             try {
-                if (plugin.getServer().unloadWorld(world, false)) {
-                    FileUtils.forceDelete(world.getWorldFolder());
-                    createWorld();
+                if (plugin.getServer().unloadWorld(eventWorld, false)) {
+                    FileUtils.forceDelete(eventWorld.getWorldFolder());
+                    eventWorld = createWorld();
                     plugin.getLogger().info("Dragon event world reset.");
                 } else {
                     plugin.getLogger().severe("Something went wrong while unloading event world.");
@@ -136,6 +136,8 @@ public class Event {
 
         this.joinedBefore.add(player);
         this.currentSessions.add(new EventPlayerSession(player));
+
+        player.teleport(eventWorld.getSpawnLocation());
         player.sendMessage(Utils.getMessage("joined", player));
 
     }
@@ -172,11 +174,10 @@ public class Event {
             this.eventTask = null;
         }
 
-        World world = plugin.getServer().getWorld(plugin.getConfig().getString("event-world-name"));
-        if (world != null) {
+        if (eventWorld != null) {
             try {
-                world.getEnderDragonBattle().getEnderDragon().remove();
-                world.getEnderDragonBattle().getBossBar().setVisible(false);
+                eventWorld.getEnderDragonBattle().getEnderDragon().remove();
+                eventWorld.getEnderDragonBattle().getBossBar().setVisible(false);
             } catch (Exception ignored) {
 
             }
@@ -338,6 +339,10 @@ public class Event {
 
     public FileConfiguration getLocationsFile() {
         return locationsFile;
+    }
+
+    public World getEventWorld() {
+        return eventWorld;
     }
 
     public Location getSpawn() {

@@ -3,6 +3,7 @@ package io.github.greenmc.dragonevent.listeners;
 import io.github.greenmc.dragonevent.DragonEvent;
 import io.github.greenmc.dragonevent.event.Event;
 import io.github.greenmc.dragonevent.util.Utils;
+import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -53,6 +54,9 @@ public class PlayerListener implements Listener {
     public void onDamage(EntityDamageByEntityEvent e) {
         if (!event.isActive()) return;
 
+        World world = e.getEntity().getWorld();
+        if (world != event.getEventWorld()) return;
+
         Entity victimEntity = e.getEntity();
         Entity attackerEntity = e.getDamager();
 
@@ -80,9 +84,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        if (!event.isActive()) {
-            return;
-        }
+        if (!event.isActive()) return;
 
         Player victim = e.getEntity().getPlayer();
         if (event.isPlaying(victim)) {

@@ -4,9 +4,11 @@ import io.github.greenmc.dragonevent.DragonEvent;
 import io.github.greenmc.dragonevent.util.Utils;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.ArrayList;
@@ -24,12 +26,13 @@ public class PlayerTeleportListener implements Listener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        Location to = event.getTo();
-        World world = to.getWorld();
+        World world = event.getFrom().getWorld();
         Player player = event.getPlayer();
 
-        if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.END_PORTAL) ||
-                (world != null && world.getName().equalsIgnoreCase(plugin.getConfig().getString("event-world-name")))) {
+        if (world.getName().equalsIgnoreCase(Utils.getString("lobby-world-name"))
+                && event.getCause().equals(PlayerTeleportEvent.TeleportCause.END_PORTAL)) {
+
+            event.setCancelled(true);
 
             if (plugin.getEvent().isActive()) {
                 plugin.getEvent().enter(player);
@@ -47,8 +50,6 @@ public class PlayerTeleportListener implements Listener {
             if (location != null) {
                 player.teleport(location);
             }
-
-            event.setCancelled(true);
         }
     }
 
