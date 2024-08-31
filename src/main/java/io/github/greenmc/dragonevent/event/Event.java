@@ -40,6 +40,14 @@ public class Event {
     }
 
     public void start() {
+        if (this.getSpawn() == null) {
+            plugin.getServer().getOnlinePlayers()
+                    .stream()
+                    .filter(p -> p.hasPermission("dragonevent.admin"))
+                    .forEach(p -> p.sendMessage(Utils.getMessage("spawn-not-set", p)));
+            return;
+        }
+
         if (this.active) return;
 
         this.active = true;
@@ -72,7 +80,6 @@ public class Event {
     }
 
     public void resetWorld() {
-        String worldName = plugin.getConfig().getString("event-world-name");
         boolean alreadyCreated = false;
 
         if (eventWorld == null) {
@@ -346,8 +353,7 @@ public class Event {
     }
 
     public Location getSpawn() {
-        Location spawn = locationsFile.getLocation("spawn");
-        return spawn == null ? plugin.getServer().getWorlds().get(0).getSpawnLocation() : spawn;
+        return locationsFile.getLocation("spawn");
     }
 
     public void setSpawn(Location location) {
