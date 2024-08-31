@@ -46,6 +46,14 @@ public class EventAdminCommand extends Command {
             Location loc = player.getLocation();
             event.setSpawn(loc);
             player.sendMessage(Utils.getMessage("new-spawn", player).replace("%location%", LocationSerializer.toString(loc)));
+            return true;
+        }
+
+        if (arg.equalsIgnoreCase("setspawn") && sender instanceof Player player) {
+            Location loc = player.getLocation();
+            event.setEventSpawn(loc);
+            player.sendMessage(Utils.getMessage("new-event-spawn", player).replace("%location%", LocationSerializer.toString(loc)));
+            return true;
         }
 
         if (arg.equalsIgnoreCase("save")) {

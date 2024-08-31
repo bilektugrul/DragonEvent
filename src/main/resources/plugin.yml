@@ -1,5 +1,5 @@
 name: DragonEvent
-version: '${project.version}'
+version: '${version}'
 author: bilektugrul
 main: io.github.greenmc.dragonevent.DragonEvent
 api-version: '1.19'

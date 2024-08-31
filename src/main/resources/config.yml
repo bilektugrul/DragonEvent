@@ -122,7 +122,9 @@ messages:
   reloaded: '&bConfig reloaded!'
   saved: '&bSpawn and auto save data are saved!'
   new-spawn: '&bNew spawn location: &f%location%'
+  new-event-spawn: '&bNew event spawn location: &f%location%'
   spawn-not-set: '&cSpawn location is not set, therefore Dragon Event can not be started.'
+  event-spawn-not-set: '&cEvent world''S spawn location is not set, therefore Dragon Event can not be started.'
 
 sounds:
   start:

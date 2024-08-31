@@ -19,7 +19,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.TimeZone;
-import java.util.logging.Level;
 
 public class DragonEvent extends JavaPlugin {
 
@@ -36,7 +35,7 @@ public class DragonEvent extends JavaPlugin {
         this.vaultManager = new VaultManager(this);
         this.rewardManager = new RewardManager(this);
         this.event = new Event(this);
-        this.event.resetWorld();
+        this.event.loadWorld();
 
         if (Utils.getBoolean("auto-start.enabled")) {
             this.autoStartManager = new AutoStartManager(this);
@@ -54,7 +53,7 @@ public class DragonEvent extends JavaPlugin {
             try {
                 this.bot = JDABuilder.createDefault(Utils.getString("discord.token")).build();
             } catch (Exception e) {
-                getLogger().log(Level.WARNING, "Something went wrong while trying to connect discord. Please check your token.");
+                getLogger().warning("Something went wrong while trying to connect discord. Please check your token.");
             }
         }
     }

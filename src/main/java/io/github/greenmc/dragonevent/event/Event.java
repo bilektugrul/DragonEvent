@@ -48,6 +48,14 @@ public class Event {
             return;
         }
 
+        if (this.getEventSpawn() == null) {
+            plugin.getServer().getOnlinePlayers()
+                    .stream()
+                    .filter(p -> p.hasPermission("dragonevent.admin"))
+                    .forEach(p -> p.sendMessage(Utils.getMessage("event-spawn-not-set", p)));
+            return;
+        }
+
         if (this.active) return;
 
         this.active = true;
@@ -79,37 +87,39 @@ public class Event {
         Bukkit.broadcastMessage(Utils.getMessage("start", null));
     }
 
-    public void resetWorld() {
-        boolean alreadyCreated = false;
-
-        if (eventWorld == null) {
-            eventWorld = createWorld();
-            alreadyCreated = true;
-        } else {
-            Location spawn = getSpawn();
-            if (spawn != null) {
-                eventWorld.getPlayers().forEach(player -> player.teleport(spawn));
-            }
-        }
-
-        if (!alreadyCreated) {
-            try {
-                if (plugin.getServer().unloadWorld(eventWorld, false)) {
-                    FileUtils.forceDelete(eventWorld.getWorldFolder());
-                    eventWorld = createWorld();
-                    plugin.getLogger().info("Dragon event world reset.");
-                } else {
-                    plugin.getLogger().severe("Something went wrong while unloading event world.");
-                }
-            } catch (Exception e) {
-                plugin.getLogger().severe("Something went terribly wrong with event world creation.");
-                e.printStackTrace();
-            }
+    public void loadWorld() {
+        this.eventWorld = plugin.getServer().getWorld(Utils.getString("event-world-name"));
+        if (this.eventWorld == null) {
+            this.resetWorld();
         }
     }
 
-    private World createWorld() {
+    private void resetWorld() {
+        Location spawn = getSpawn();
+        if (spawn != null) {
+            eventWorld.getPlayers().forEach(player -> player.teleport(spawn));
+        }
+
+        try {
+            if (plugin.getServer().unloadWorld(eventWorld, false)) {
+                FileUtils.forceDelete(eventWorld.getWorldFolder());
+                eventWorld = createWorld(eventWorld);
+                plugin.getLogger().info("Dragon event world reset.");
+            } else {
+                plugin.getLogger().severe("Something went wrong while unloading event world.");
+            }
+        } catch (Exception e) {
+            plugin.getLogger().severe("Something went terribly wrong with event world creation.");
+            e.printStackTrace();
+        }
+    }
+
+    private World createWorld(World oldWorld) {
         WorldCreator worldCreator = new WorldCreator(Utils.getString("event-world-name"));
+        if (oldWorld != null) {
+            worldCreator.copy(oldWorld);
+        }
+
         worldCreator.environment(World.Environment.THE_END);
         World world = worldCreator.createWorld();
         world.setGameRule(GameRule.KEEP_INVENTORY, Utils.getBoolean("end-rules.keepInventory"));
@@ -186,7 +196,7 @@ public class Event {
                 eventWorld.getEnderDragonBattle().getEnderDragon().remove();
                 eventWorld.getEnderDragonBattle().getBossBar().setVisible(false);
             } catch (Exception ignored) {
-
+                plugin.getServer().getLogger().warning("Something went wrong while finishing the event. Error code: E-3");
             }
         }
 
@@ -240,6 +250,7 @@ public class Event {
 
                 for (EventPlayerSession session : getCurrentSessions()) {
                     Player player = session.getPlayer();
+                    if (rewardedPlayers.contains(player)) continue;
 
                     for (String cmd : normalReward.getCommands()) {
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), PlaceholderAPI.setPlaceholders(player, cmd));
@@ -359,4 +370,19 @@ public class Event {
     public void setSpawn(Location location) {
         locationsFile.set("spawn", location);
     }
+
+    public void setEventSpawn(Location location) {
+        locationsFile.set("event-spawn.x", location.getBlockX());
+        locationsFile.set("event-spawn.y", location.getBlockY());
+        locationsFile.set("event-spawn.z", location.getBlockZ());
+    }
+
+    public Location getEventSpawn() {
+        int x = locationsFile.getInt("event-spawn.x");
+        int y = locationsFile.getInt("event-spawn.y");
+        int z = locationsFile.getInt("event-spawn.z");
+
+        return new Location(eventWorld, x, y, z);
+    }
+
 }
