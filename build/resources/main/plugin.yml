@@ -1,6 +1,0 @@
-name: DragonEvent
-version: '1.0-SNAPSHOT'
-author: bilektugrul
-main: io.github.greenmc.dragonevent.DragonEvent
-api-version: '1.19'
-load: POSTWORLD
