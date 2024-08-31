@@ -51,6 +51,7 @@ end-rules:
 
 # Discord feature
 discord:
+  enabled: false
   # Bot token
   token: ''
   # Text channel id
@@ -148,12 +149,12 @@ endgame-commands:
 
   places:
     1:
-      - 'give %player% dragon_egg 1'
-      - 'give %player% dragon_head 3'
+      - 'give %player_name% dragon_egg 1'
+      - 'give %player_name% dragon_head 3'
     2:
-      - 'give %player% dragon_head 2'
+      - 'give %player_name% dragon_head 2'
     3:
-      - 'give %player% dragon_head 1'
+      - 'give %player_name% dragon_head 1'
 
   every-other-player:
-    - 'bal add %player% 1000'
+    - 'bal add %player_name% 1000'

@@ -231,8 +231,8 @@ public class Event {
             Reward normalReward = rewardManager.getNormalReward();
             if (normalReward != null) {
 
-                for (LeaderboardEntry entry : leaderboard) {
-                    Player player = Bukkit.getPlayerExact(entry.name());
+                for (EventPlayerSession session : getCurrentSessions()) {
+                    Player player = session.getPlayer();
 
                     for (String cmd : normalReward.getCommands()) {
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), PlaceholderAPI.setPlaceholders(player, cmd));
